@@ -8,7 +8,7 @@ export default class postController {
     try {
       const items = await Post.find();
 
-      successResponse(res, { items });
+      successResponse(res, { items, 'test':'test' });
     } catch (exception: any) {
       next(new Error(exception));
     }
