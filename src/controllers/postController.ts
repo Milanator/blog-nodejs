@@ -8,7 +8,21 @@ export default class postController {
     try {
       const items = await Post.find();
 
-      successResponse(res, { items, 'test':'test' });
+      successResponse(res, { items, test: "test" });
+    } catch (exception: any) {
+      next(new Error(exception));
+    }
+  }
+
+  static async store(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { title, text } = req.body;
+
+      const model = new Post({ title, text });
+
+      await model.save();
+
+      successResponse(res, { message: "Succesfully stored post" });
     } catch (exception: any) {
       next(new Error(exception));
     }
