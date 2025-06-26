@@ -1,6 +1,9 @@
 import app from "./app.ts";
 import config from "./config/config.ts";
+import database from "./plugins/database.ts";
 
-app.listen(config.port, () => {
-  console.log(`Example app listening on port ${config.port}`);
+database().then(() => {
+  app.listen(config.port, () => {
+    console.log(`Example app listening on port ${config.port}`);
+  });
 });
