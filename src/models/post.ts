@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import user from './user.ts'
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
@@ -11,7 +12,7 @@ const schema = new Schema({
   text: {
     type: String,
   },
-  userId: { type: ObjectId, ref: "User" },
+  userId: { type: ObjectId, ref: user.modelName },
 });
 
 export default mongoose.model("Post", schema);
