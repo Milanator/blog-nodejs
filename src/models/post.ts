@@ -5,10 +5,6 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const schema = new Schema({
-  title: {
-    type: String,
-    required: true,
-  },
   text: {
     type: String,
   },
@@ -17,5 +13,11 @@ const schema = new Schema({
   },
   userId: { type: ObjectId, ref: user.modelName },
 });
+
+schema.methods.setImageUrl = (post: any) => {
+  post.imageUrl = `${process.env.BACKEND_ORIGIN}/${post.imageUrl}`;
+
+  return post;
+};
 
 export default mongoose.model("Post", schema);

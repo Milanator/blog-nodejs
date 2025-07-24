@@ -7,13 +7,11 @@ export default class postController {
   // post list
   static async index(req: Request, res: Response, next: NextFunction) {
     try {
+      const model = new Post();
+
       const items = await Post.find().sort({ _id: "desc" }).populate("userId");
 
-      items.map((item: object) => {
-        item.imageUrl = `${process.env.BACKEND_ORIGIN}/${item.imageUrl}` 
-
-        return item;
-      });
+      items.map((item: object) => model.setImageUrl(item));
 
       return successResponse(res, { items, test: "test" });
     } catch (exception: any) {
@@ -38,10 +36,10 @@ export default class postController {
         throw error;
       }
 
-      const { title, text } = req.body;
+      const { text } = req.body;
       const imageUrl = req.file.path;
 
-      const model = new Post({ title, text, imageUrl, userId: req.user._id });
+      const model = new Post({ text, imageUrl, userId: req.user._id });
 
       await model.save();
 
@@ -52,8 +50,33 @@ export default class postController {
   }
 
   static async show(req: Request, res: Response, next: NextFunction) {
-    const post = await Post.findById(req.params.id).select("_id title text");
+    try {
+      const post = await Post.findById(req.params.id).select(
+        "_id text imageUrl"
+      );
 
-    return res.json(post);
+      if (!post) {
+        const error = new Error("Post not found");
+        error.statusCode = 404;
+
+        throw error;
+      }
+
+      return successResponse(res, new Post().setImageUrl(post));
+    } catch (exception: any) {
+      next(new Error(exception));
+    }
+  }
+
+  static async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { text } = req.body;
+
+      Post.updateOne({ _id: req.params.id }, { $set: { text } })
+
+      return successResponse(res, { message: "Succesfully updated post" });
+    } catch (exception: any) {
+      next(new Error(exception));
+    }
   }
 }

@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/", postController.index);
 router.get("/:id", postController.show);
+router.put("/:id", storeRules, postController.update);
 router.post("/", multer().single("imageUrl"), storeRules, postController.store);
 
 export default router;
