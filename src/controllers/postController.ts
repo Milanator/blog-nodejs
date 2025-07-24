@@ -72,9 +72,19 @@ export default class postController {
     try {
       const { text } = req.body;
 
-      Post.updateOne({ _id: req.params.id }, { $set: { text } })
+      Post.updateOne({ _id: req.params.id }, { $set: { text } });
 
       return successResponse(res, { message: "Succesfully updated post" });
+    } catch (exception: any) {
+      next(new Error(exception));
+    }
+  }
+
+  static async delete(req: Request, res: Response, next: NextFunction) {
+     try {
+      await Post.deleteOne({ _id: req.params.id });
+
+      return successResponse(res, { message: "Succesfully deleted post" });
     } catch (exception: any) {
       next(new Error(exception));
     }
