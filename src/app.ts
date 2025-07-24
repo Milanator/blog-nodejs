@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 
+import path from "path";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -10,6 +11,9 @@ import postRoutes from "./routes/post.ts";
 import { failedResponse } from "./utils/api.ts";
 
 const app = express();
+
+// static files
+app.use("/public", express.static(path.join(path.resolve(), "public")));
 
 // plugins
 app.use(bodyParser.json());

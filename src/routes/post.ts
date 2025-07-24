@@ -1,10 +1,12 @@
 import express from "express";
-import postController from "../controllers/postController.ts";
-import { storeRules } from "../validators/post.ts";
+import postController from "./../controllers/postController.ts";
+import multer from "./../plugins/multer.ts";
+import { storeRules } from "./../validators/post.ts";
 
 const router = express.Router();
 
 router.get("/", postController.index);
-router.post("/", storeRules, postController.store);
+router.get("/:id", postController.show);
+router.post("/", multer().single("imageUrl"), storeRules, postController.store);
 
 export default router;
