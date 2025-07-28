@@ -29,8 +29,8 @@ export default class userController {
         user,
         message: "User successfuly registered.",
       });
-    } catch (exception: any) {
-      next(new Error(exception));
+    } catch (exception: Error) {
+      next(exception);
     }
   }
 }

@@ -7,12 +7,11 @@ export const signUpRules = [
     .withMessage("Email musí byť validný.")
     .custom((value: String, { req }) =>
       User.findOne({ email: value }).then((user: object | undefined) => {
-        if (!user) {
+        if (user) {
           return Promise.reject("Email už existuje.");
         }
       })
-    )
-    .normalizeEmail(),
+    ),
 
   body("password").trim().isLength({ min: 5 }),
 
