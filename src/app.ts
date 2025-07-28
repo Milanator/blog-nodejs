@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 
 // routes
 import postRoutes from "./routes/post.ts";
+import userRoutes from "./routes/user.ts";
 
 import { failedResponse } from "./utils/api.ts";
 
@@ -34,6 +35,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // routes
 app.use("/api/v1/post", postRoutes);
+app.use("/api/v1/user", userRoutes);
 
 // error handling
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {

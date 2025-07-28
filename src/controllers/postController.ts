@@ -2,18 +2,33 @@ import type { Request, Response, NextFunction } from "express";
 import { successResponse } from "../utils/api.ts";
 import { validationResult } from "express-validator";
 import Post from "../models/post.ts";
+import { getPagination } from "../utils/pagination.ts";
 
 export default class postController {
   // post list
   static async index(req: Request, res: Response, next: NextFunction) {
     try {
       const model = new Post();
+      const count = await Post.countDocuments();
 
-      const items = await Post.find().sort({ _id: "desc" }).populate("userId");
+      const { skip, perPage, currentPage, totalPages } = getPagination(
+        req,
+        count
+      );
+
+      const items = await Post.find()
+        .limit(perPage)
+        .skip(skip)
+        .sort({ _id: "desc" })
+        .populate("userId");
 
       items.map((item: object) => model.setImageUrl(item));
 
-      return successResponse(res, { items, test: "test" });
+      return successResponse(res, {
+        items,
+        totalPages,
+        currentPage,
+      });
     } catch (exception: any) {
       next(new Error(exception));
     }
@@ -81,7 +96,7 @@ export default class postController {
   }
 
   static async delete(req: Request, res: Response, next: NextFunction) {
-     try {
+    try {
       await Post.deleteOne({ _id: req.params.id });
 
       return successResponse(res, { message: "Succesfully deleted post" });

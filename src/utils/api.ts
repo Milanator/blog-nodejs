@@ -16,10 +16,12 @@ export const successResponse = (
 export const failedResponse = (
   res: Response,
   exception: Error,
+  data: Array<any> | undefined = undefined,
   status: number = 500
 ) => {
   return res.status(status).json({
     message: exception.message,
+    data,
     error: 1,
   });
 };
