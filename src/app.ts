@@ -1,3 +1,5 @@
+import { failedResponse } from "./utils/api.ts";
+import { FRONTEND_ORIGIN } from "./constants.ts";
 import type { Request, Response, NextFunction } from "express";
 
 import path from "path";
@@ -8,8 +10,6 @@ import bodyParser from "body-parser";
 // routes
 import postRoutes from "./routes/post.ts";
 import userRoutes from "./routes/user.ts";
-
-import { failedResponse } from "./utils/api.ts";
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: FRONTEND_ORIGIN,
   })
 );
 

@@ -3,6 +3,7 @@ import { successResponse } from "../utils/api.ts";
 import { validationResult } from "express-validator";
 import Post from "../models/post.ts";
 import { getPagination } from "../utils/pagination.ts";
+import { getError } from "../utils/error.ts";
 
 export default class postController {
   // post list
@@ -45,10 +46,7 @@ export default class postController {
 
       // no image
       if (!req.file) {
-        const error = new Error("Image not found");
-        error.statusCode = 500;
-
-        throw error;
+        throw getError("Image not found");
       }
 
       const { text } = req.body;
@@ -71,10 +69,7 @@ export default class postController {
       );
 
       if (!post) {
-        const error = new Error("Post not found");
-        error.statusCode = 404;
-
-        throw error;
+        throw getError("Post not found", 404);
       }
 
       return successResponse(res, new Post().setImageUrl(post));
