@@ -4,20 +4,23 @@ import user from "./user.ts";
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
-const schema = new Schema({
-  text: {
-    type: String,
+const schema = new Schema(
+  {
+    text: {
+      type: String,
+    },
+    imageUrl: {
+      type: String,
+      get: function (imageUrl: string) {
+        return `${process.env.BACKEND_ORIGIN}/${imageUrl}`;
+      },
+    },
+    userId: { type: ObjectId, ref: user.modelName },
   },
-  imageUrl: {
-    type: String,
-  },
-  userId: { type: ObjectId, ref: user.modelName },
-});
-
-schema.methods.setImageUrl = (post: any) => {
-  post.imageUrl = `${process.env.BACKEND_ORIGIN}/${post.imageUrl}`;
-
-  return post;
-};
+  {
+    toObject: { getters: true },
+    toJSON: { getters: true },
+  }
+);
 
 export default mongoose.model("Post", schema);

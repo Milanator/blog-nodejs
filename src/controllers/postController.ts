@@ -9,7 +9,6 @@ export default class postController {
   // post list
   static async index(req: Request, res: Response, next: NextFunction) {
     try {
-      const model = new Post();
       const count = await Post.countDocuments();
 
       const { skip, perPage, currentPage, totalPages } = getPagination(
@@ -22,8 +21,6 @@ export default class postController {
         .skip(skip)
         .sort({ _id: "desc" })
         .populate("userId");
-
-      items.map((item: object) => model.setImageUrl(item));
 
       return successResponse(res, {
         items,
@@ -56,7 +53,10 @@ export default class postController {
 
       await model.save();
 
-      return successResponse(res, { message: "Succesfully stored post" });
+      return successResponse(res, {
+        item: model,
+        message: "Succesfully stored post",
+      });
     } catch (exception: any) {
       next(new Error(exception));
     }
@@ -72,7 +72,7 @@ export default class postController {
         throw getError("Post not found", 404);
       }
 
-      return successResponse(res, new Post().setImageUrl(post));
+      return successResponse(res, post);
     } catch (exception: any) {
       next(new Error(exception));
     }
