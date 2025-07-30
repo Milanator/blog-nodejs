@@ -15,7 +15,7 @@ const schema = new Schema(
         return `${process.env.BACKEND_ORIGIN}/${imageUrl}`;
       },
     },
-    userId: { type: ObjectId, ref: user.modelName },
+    userId: { type: ObjectId, ref: user.modelName, required: true },
   },
   {
     toObject: { getters: true },

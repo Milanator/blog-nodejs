@@ -41,7 +41,7 @@ export default class userController {
       if (!errors.isEmpty()) {
         throw getError("Validation failed", 422, errors.array());
       }
-      
+
       const { email, password } = req.body;
 
       const user = await User.findOne({ email });
@@ -71,7 +71,7 @@ export default class userController {
 
       successResponse(res, {
         token,
-        userId: user._id.toString(),
+        user,
         message: "Succesfully authenticated",
       });
     } catch (exception: Error) {

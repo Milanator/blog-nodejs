@@ -15,10 +15,9 @@ export const successResponse = (
 
 export const failedResponse = (
   res: Response,
-  exception: Error,
-  status: number = 500
+  exception: Error
 ) => {
-  return res.status(status).json({
+  return res.status(exception.statusCode || 500).json({
     message: exception.message,
     data: exception.data,
     error: 1,

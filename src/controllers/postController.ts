@@ -4,6 +4,7 @@ import { validationResult } from "express-validator";
 import Post from "../models/post.ts";
 import { getPagination } from "../utils/pagination.ts";
 import { getError } from "../utils/error.ts";
+import { canModify } from "../policies/post.policy.ts";
 
 export default class postController {
   // post list
@@ -16,6 +17,7 @@ export default class postController {
         count
       );
 
+      // const items = await Post.find({ userId: req.user._id })
       const items = await Post.find()
         .limit(perPage)
         .skip(skip)
@@ -80,9 +82,21 @@ export default class postController {
 
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
+      // extra authorization
+      const post = await Post.findOne({ _id: req.params.id }).select(
+        "_id userId"
+      );
+
+      // policy
+      if (!canModify(req.user, post)) {
+        throw getError("Unauthorized", 401);
+      }
+
       const { text } = req.body;
 
-      Post.updateOne({ _id: req.params.id }, { $set: { text } });
+      post.text = text;
+
+      await post.save();
 
       return successResponse(res, { message: "Succesfully updated post" });
     } catch (exception: any) {
@@ -92,11 +106,21 @@ export default class postController {
 
   static async delete(req: Request, res: Response, next: NextFunction) {
     try {
+      // extra authorization
+      const post = await Post.findOne({ _id: req.params.id }).select(
+        "_id userId"
+      );
+
+      // policy
+      if (!canModify(req.user, post)) {
+        throw getError("Unauthorized", 401);
+      }
+
       await Post.deleteOne({ _id: req.params.id });
 
       return successResponse(res, { message: "Succesfully deleted post" });
     } catch (exception: any) {
-      next(new Error(exception));
+      next(exception);
     }
   }
 }

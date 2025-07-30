@@ -26,13 +26,6 @@ app.use(
   })
 );
 
-// auth user
-app.use((req: Request, res: Response, next: NextFunction) => {
-  req.user = { _id: "684bdf17c925da514c1ea699" };
-
-  next();
-});
-
 // routes
 app.use("/api/v1/post", postRoutes);
 app.use("/api/v1/user", userRoutes);
