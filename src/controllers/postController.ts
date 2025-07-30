@@ -5,7 +5,6 @@ import Post from "../models/post.ts";
 import { getPagination } from "../utils/pagination.ts";
 import { getError } from "../utils/error.ts";
 import { canModify } from "../policies/post.policy.ts";
-import websocket from "../plugins/websocket.ts";
 
 export default class postController {
   // post list
@@ -53,8 +52,6 @@ export default class postController {
 
       await model.save();
 
-      websocket.getInstance().emit("created-post", { model });
-
       return successResponse(res, {
         item: model,
         message: "Succesfully stored post",
@@ -98,8 +95,6 @@ export default class postController {
 
       await model.save();
 
-      websocket.getInstance().emit("updated-post", { model });
-
       return successResponse(res, { message: "Succesfully updated post" });
     } catch (exception: any) {
       next(new Error(exception));
@@ -119,8 +114,6 @@ export default class postController {
       }
 
       await Post.deleteOne({ _id: req.params.id });
-
-      websocket.getInstance().emit("deleted-post", { modelId: req.params.id });
 
       return successResponse(res, { message: "Succesfully deleted post" });
     } catch (exception: any) {

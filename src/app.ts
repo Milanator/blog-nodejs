@@ -1,15 +1,14 @@
 import { failedResponse } from "./utils/api.ts";
 import { FRONTEND_ORIGIN } from "./constants.ts";
 import type { Request, Response, NextFunction } from "express";
+import graphqlSchema from "./graphql/schema.ts";
+import graphqlResolvers from "./graphql/resolvers.ts";
 
 import path from "path";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-
-// routes
-import postRoutes from "./routes/post.ts";
-import userRoutes from "./routes/user.ts";
+import { createHandler } from "graphql-http/lib/use/express";
 
 const app = express();
 
@@ -26,9 +25,13 @@ app.use(
   })
 );
 
-// routes
-app.use("/api/v1/post", postRoutes);
-app.use("/api/v1/user", userRoutes);
+app.all(
+  "/graphql",
+  createHandler({
+    schema: graphqlSchema,
+    rootValue: graphqlResolvers,
+  })
+);
 
 // error handling
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
