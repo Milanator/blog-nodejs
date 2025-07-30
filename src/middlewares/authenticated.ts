@@ -11,7 +11,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
     decodedToken = jwt.verify(token, JWT_PRIVATE_KEY);
   } catch (error: Error) {
-    error.statusCode = 500;
+    error.statusCode = 401;
 
     throw error;
   }

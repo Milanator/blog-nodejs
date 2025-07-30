@@ -6,7 +6,7 @@ export const getPagination = (req: Request, itemCount: number) => {
   return {
     skip: (page - 1) * perPage,
     totalPages: Math.ceil(itemCount / perPage),
-    currentPage: page,
+    page: Number(page),
     perPage,
   };
 };

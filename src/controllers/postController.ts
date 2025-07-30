@@ -13,10 +13,7 @@ export default class postController {
     try {
       const count = await Post.countDocuments();
 
-      const { skip, perPage, currentPage, totalPages } = getPagination(
-        req,
-        count
-      );
+      const { skip, perPage, page, totalPages } = getPagination(req, count);
 
       // const items = await Post.find({ userId: req.user._id })
       const items = await Post.find()
@@ -28,7 +25,7 @@ export default class postController {
       return successResponse(res, {
         items,
         totalPages,
-        currentPage,
+        page,
       });
     } catch (exception: any) {
       next(new Error(exception));
@@ -86,20 +83,22 @@ export default class postController {
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       // extra authorization
-      const post = await Post.findOne({ _id: req.params.id }).select(
-        "_id userId"
+      const model = await Post.findOne({ _id: req.params.id }).populate(
+        "userId"
       );
 
       // policy
-      if (!canModify(req.user, post)) {
+      if (!canModify(req.user, model)) {
         throw getError("Unauthorized", 401);
       }
 
       const { text } = req.body;
 
-      post.text = text;
+      model.text = text;
 
-      await post.save();
+      await model.save();
+
+      websocket.getInstance().emit("updated-post", { model });
 
       return successResponse(res, { message: "Succesfully updated post" });
     } catch (exception: any) {
@@ -120,6 +119,8 @@ export default class postController {
       }
 
       await Post.deleteOne({ _id: req.params.id });
+
+      websocket.getInstance().emit("deleted-post", { modelId: req.params.id });
 
       return successResponse(res, { message: "Succesfully deleted post" });
     } catch (exception: any) {
