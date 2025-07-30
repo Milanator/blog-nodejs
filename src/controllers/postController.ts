@@ -5,6 +5,7 @@ import Post from "../models/post.ts";
 import { getPagination } from "../utils/pagination.ts";
 import { getError } from "../utils/error.ts";
 import { canModify } from "../policies/post.policy.ts";
+import websocket from "../plugins/websocket.ts";
 
 export default class postController {
   // post list
@@ -54,6 +55,8 @@ export default class postController {
       const model = new Post({ text, imageUrl, userId: req.user._id });
 
       await model.save();
+
+      websocket.getInstance().emit("created-post", { model });
 
       return successResponse(res, {
         item: model,
