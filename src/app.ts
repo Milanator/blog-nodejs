@@ -9,6 +9,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { createHandler } from "graphql-http/lib/use/express";
+import { getErrorResponse } from "./utils/error.ts";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.all(
     schema: graphqlSchema,
     rootValue: graphqlResolvers,
     graphiql: true,
+    formatError: (err: any) => getErrorResponse(err),
   })
 );
 

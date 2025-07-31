@@ -9,3 +9,15 @@ export const getError = (
 
   return error;
 };
+
+export const getErrorResponse = (err: any) => {
+  if (!err.originalError) {
+    return err;
+  }
+
+  const data = err.originalError.data;
+  const message = err.message || "An error occured.";
+  const code = err.originalError.code || 500;
+
+  return { data, message, code };
+};
