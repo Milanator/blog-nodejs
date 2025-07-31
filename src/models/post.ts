@@ -18,6 +18,7 @@ const schema = new Schema(
     userId: { type: ObjectId, ref: user.modelName, required: true },
   },
   {
+    timestamps: true,
     toObject: { getters: true },
     toJSON: { getters: true },
   }

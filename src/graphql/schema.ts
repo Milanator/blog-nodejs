@@ -11,6 +11,7 @@ export default buildSchema(`
     }
 
 
+
     type User {
         _id: ID!
         email: String!
@@ -19,14 +20,26 @@ export default buildSchema(`
         imageUrl: String
     }
 
-    input UserInputData {
+    input SignUpData {
         email: String!
         password: String!
         name: String!
     }
 
+    input LoginData {
+        email: String!
+        password: String!
+    }
+
+    type LoginResponse {
+        message: String!
+        user: User
+        token: String!
+    }
+
     type RootMutation {
-        createUser(userInput: UserInputData): User!
+        signUp(userInput: SignUpData): User!
+        login(userInput: LoginData): LoginResponse
     }
 
 

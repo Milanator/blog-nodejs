@@ -1,7 +1,10 @@
-import User from "../models/user.ts";
 import bcrypt from "bcryptjs";
-import { getError } from "../utils/error.ts";
+import jwt from "jsonwebtoken";
 import validator from "validator";
+import type { Request } from "express";
+import { getError } from "../utils/error.ts";
+import { JWT_PRIVATE_KEY } from "../constants.ts";
+import User from "../models/user.ts";
 
 type ErrorType = {
   message: string;
@@ -15,7 +18,7 @@ export default {
     };
   },
 
-  async createUser({ userInput }, req) {
+  async signUp({ userInput }, req: Request) {
     // validation
     const errors: ErrorType[] = [];
 
@@ -50,5 +53,46 @@ export default {
     });
 
     return user;
+  },
+
+  async login({ userInput }, req: Request) {
+    // validation
+    const errors: ErrorType[] = [];
+
+    if (errors.length > 0) {
+      throw getError(errors[0].message);
+    }
+
+    const user = await User.findOne({ email: userInput.email });
+
+    if (!user) {
+      throw getError("User doesnt exist");
+    }
+
+    const matchPassword = await bcrypt.compare(
+      userInput.password,
+      user.password
+    );
+
+    if (!matchPassword) {
+      throw getError("Incorrect password");
+    }
+
+    // generate token
+    const token = jwt.sign(
+      {
+        name: user.name,
+        email: user.email,
+        _id: user._id.toString(),
+      },
+      JWT_PRIVATE_KEY,
+      { expiresIn: "1h" }
+    );
+
+    return {
+      token,
+      user,
+      message: "Succesfully authenticated",
+    };
   },
 };
