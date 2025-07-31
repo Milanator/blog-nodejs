@@ -1,13 +1,23 @@
 import { buildSchema } from "graphql";
 
 export default buildSchema(`
-    type HelloWorld {
-        message: String
-        views: Int
+    type Post {
+         _id: ID!
+         text: String!
+         imageUrl: String!
+         userId: User!
+         createdAt: String!
+         updatedAt: String!
+    }
+
+    type getPostsQuery {
+        page: Int
+        totalPages: Int
+        items: [Post]
     }
 
     type RootQuery {
-        firstExample: HelloWorld!
+        getPosts(page: Int, perPage: Int): getPostsQuery
     }
 
 
@@ -18,6 +28,11 @@ export default buildSchema(`
         password: String!
         name: String
         imageUrl: String
+    }
+
+    input StorePostData {
+        text: String!
+        imageUrl: String!
     }
 
     input SignUpData {
@@ -37,9 +52,15 @@ export default buildSchema(`
         token: String!
     }
 
+    type storePostResponse {
+        item: Post!
+        message: String!
+    }
+
     type RootMutation {
         signUp(userInput: SignUpData): User!
         login(userInput: LoginData): LoginResponse
+        storePost(postInput: StorePostData): storePostResponse!
     }
 
 

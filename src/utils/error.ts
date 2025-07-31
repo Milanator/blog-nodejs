@@ -15,6 +15,8 @@ export const getErrorResponse = (err: any) => {
     return err;
   }
 
+  console.log(err);
+
   const data = err.originalError.data;
   const message = err.message || "An error occured.";
   const code = err.originalError.code || 500;

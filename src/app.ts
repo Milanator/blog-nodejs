@@ -8,6 +8,7 @@ import path from "path";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import auth from "./middlewares/auth.js";
 import { createHandler } from "graphql-http/lib/use/express";
 import { getErrorResponse } from "./utils/error.ts";
 
@@ -26,12 +27,16 @@ app.use(
   })
 );
 
+app.use(auth)
+
 app.all(
   "/graphql",
   createHandler({
     schema: graphqlSchema,
     rootValue: graphqlResolvers,
-    graphiql: true,
+    context: (req) => ({
+      user: req.raw.user,
+    }),
     formatError: (err: any) => getErrorResponse(err),
   })
 );

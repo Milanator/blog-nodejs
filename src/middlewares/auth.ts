@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
-import { JWT_PRIVATE_KEY } from "./../constants.ts";
+import { JWT_PRIVATE_KEY } from "../constants.js";
 import mongoose from "mongoose";
 
 export default (req: Request, res: Response, next: NextFunction) => {
@@ -11,18 +11,18 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
     decodedToken = jwt.verify(token, JWT_PRIVATE_KEY);
   } catch (error: Error) {
-    error.statusCode = 401;
+    req.isAuth = false;
 
-    throw error;
+    next();
   }
 
   if (!decodedToken) {
-    const error = new Error("Not authenticated");
-    error.statusCode = 401;
+    req.isAuth = false;
 
-    throw error;
+    next();
   }
 
+  req.isAuth = true;
   req.user = {
     name: decodedToken.name,
     email: decodedToken.email,
