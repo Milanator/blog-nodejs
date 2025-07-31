@@ -30,6 +30,7 @@ app.all(
   createHandler({
     schema: graphqlSchema,
     rootValue: graphqlResolvers,
+    graphiql: true,
   })
 );
 
