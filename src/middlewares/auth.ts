@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
-import { JWT_PRIVATE_KEY } from "../constants.js";
+import { JWT_PRIVATE_KEY } from "../constants.ts";
 import mongoose from "mongoose";
 
 export default (req: Request, res: Response, next: NextFunction) => {
@@ -13,13 +13,13 @@ export default (req: Request, res: Response, next: NextFunction) => {
   } catch (error: Error) {
     req.isAuth = false;
 
-    next();
+    return next();
   }
 
   if (!decodedToken) {
     req.isAuth = false;
 
-    next();
+    return next();
   }
 
   req.isAuth = true;
@@ -29,5 +29,5 @@ export default (req: Request, res: Response, next: NextFunction) => {
     _id: new mongoose.Types.ObjectId(decodedToken._id),
   };
 
-  next();
+  return next();
 };

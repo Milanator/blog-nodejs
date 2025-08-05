@@ -8,7 +8,7 @@ import path from "path";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import auth from "./middlewares/auth.js";
+import auth from "./middlewares/auth.ts";
 import { createHandler } from "graphql-http/lib/use/express";
 import { getErrorResponse } from "./utils/error.ts";
 
