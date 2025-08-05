@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { successResponse } from "../utils/api.ts";
 import { clearFile } from "./../utils/file.ts";
-import path from 'path';
+import path from "path";
 
 export default class fileController {
   static async store(req: Request, res: Response, next: NextFunction) {

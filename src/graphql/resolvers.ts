@@ -7,6 +7,8 @@ import { JWT_PRIVATE_KEY } from "../constants.ts";
 import User from "../models/user.ts";
 import Post from "../models/post.ts";
 import { getPagination } from "../utils/pagination.ts";
+import { clearFile } from "../utils/file.ts";
+import path from "path";
 
 type ErrorType = {
   message: string;
@@ -177,6 +179,32 @@ export default {
     return {
       item,
       message: "Successfuly updated post",
+    };
+  },
+
+  async deletePost({ id }, { user }) {
+    // guest
+    if (!user) {
+      throw getError("Unauthorized");
+    }
+
+    const post = await Post.findOne({ _id: id }).populate("userId");
+
+    if (post.userId._id.toString() !== user._id.toString()) {
+      throw getError("Unauthorized");
+    }
+
+    // delete file
+    const oldFilePath = post.imageUrl.replace(
+      process.env.BACKEND_ORIGIN,
+      path.resolve()
+    );
+    clearFile(oldFilePath);
+
+    await Post.deleteOne({ _id: id });
+
+    return {
+      message: "Successfuly deleted post",
     };
   },
 };

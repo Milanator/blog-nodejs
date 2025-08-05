@@ -58,11 +58,16 @@ export default buildSchema(`
         message: String!
     }
 
+    type MessageResponse {
+        message: String!
+    }
+
     type RootMutation {
         signUp(userInput: SignUpData): User!
         login(userInput: LoginData): LoginResponse
         storePost(postInput: PostInputData): PostResponse!
         updatePost(id: ID!, postInput: PostInputData): PostResponse!
+        deletePost(id: ID!): MessageResponse!
     }
 
 
