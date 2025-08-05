@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 
 export default (req: Request, res: Response, next: NextFunction) => {
   let decodedToken;
+// throw new Error('Not authenticated.')
 
   try {
     const token = req.get("Authorization")?.split(" ")[1];
