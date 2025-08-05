@@ -4,6 +4,9 @@ import type { Request, Response, NextFunction } from "express";
 import graphqlSchema from "./graphql/schema.ts";
 import graphqlResolvers from "./graphql/resolvers.ts";
 
+import logger from "./plugins/logger.ts";
+import helmet from 'helmet'
+import compression from 'compression'
 import path from "path";
 import express from "express";
 import cors from "cors";
@@ -17,6 +20,10 @@ const app = express();
 
 // static files
 app.use("/public", express.static(path.join(path.resolve(), "public")));
+
+app.use(logger()) // request logger
+app.use(helmet()) // add security headers
+app.use(compression()) // asset compression (except image)
 
 // plugins
 app.use(bodyParser.json());
