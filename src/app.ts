@@ -11,6 +11,7 @@ import bodyParser from "body-parser";
 import auth from "./middlewares/auth.ts";
 import { createHandler } from "graphql-http/lib/use/express";
 import { getErrorResponse } from "./utils/error.ts";
+import fileRoutes from "./routes/file.ts";
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(
   })
 );
 
-app.use(auth)
+app.use(auth);
 
 app.all(
   "/graphql",
@@ -40,6 +41,8 @@ app.all(
     formatError: (err: any) => getErrorResponse(err),
   })
 );
+
+app.use("/api/file", fileRoutes);
 
 // error handling
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
