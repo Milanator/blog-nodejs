@@ -13,7 +13,12 @@ type ErrorType = {
 };
 
 export default {
-  async getPosts({ page, perPage }) {
+  async getPosts({ page, perPage }, { user }) {
+    // guest
+    if (!user) {
+      throw getError("Unauthorized");
+    }
+
     const count = await Post.countDocuments();
 
     const { skip, totalPages } = getPagination(page, perPage, count);
@@ -138,6 +143,40 @@ export default {
       token,
       user,
       message: "Succesfully authenticated",
+    };
+  },
+
+  async showPost({ id }, { user }) {
+    // guest
+    if (!user) {
+      throw getError("Unauthorized");
+    }
+
+    const post = await Post.findOne({ _id: id }).populate("userId");
+
+    return post;
+  },
+
+  async updatePost({ id, postInput }, { user }) {
+    // guest
+    if (!user) {
+      throw getError("Unauthorized");
+    }
+
+    const post = await Post.findOne({ _id: id }).populate("userId");
+
+    if (post.userId._id.toString() !== user._id.toString()) {
+      throw getError("Unauthorized");
+    }
+
+    post.text = postInput.text;
+    post.imageUrl = postInput.imageUrl;
+
+    const item = await post.save();
+
+    return {
+      item,
+      message: "Successfuly updated post",
     };
   },
 };

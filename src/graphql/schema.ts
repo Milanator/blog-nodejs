@@ -18,6 +18,7 @@ export default buildSchema(`
 
     type RootQuery {
         getPosts(page: Int, perPage: Int): getPostsQuery
+        showPost(id: ID!): Post!
     }
 
 
@@ -30,7 +31,7 @@ export default buildSchema(`
         imageUrl: String
     }
 
-    input StorePostData {
+    input PostInputData {
         text: String!
         imageUrl: String!
     }
@@ -52,7 +53,7 @@ export default buildSchema(`
         token: String!
     }
 
-    type storePostResponse {
+    type PostResponse {
         item: Post!
         message: String!
     }
@@ -60,7 +61,8 @@ export default buildSchema(`
     type RootMutation {
         signUp(userInput: SignUpData): User!
         login(userInput: LoginData): LoginResponse
-        storePost(postInput: StorePostData): storePostResponse!
+        storePost(postInput: PostInputData): PostResponse!
+        updatePost(id: ID!, postInput: PostInputData): PostResponse!
     }
 
 
