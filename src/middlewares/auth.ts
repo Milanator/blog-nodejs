@@ -2,13 +2,19 @@ import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
 import { JWT_PRIVATE_KEY } from "../constants.ts";
 import mongoose from "mongoose";
+import { getError } from "../utils/error.ts";
 
 export default (req: Request, res: Response, next: NextFunction) => {
   let decodedToken;
-// throw new Error('Not authenticated.')
+
+  const header = req.get("Authorization");
+
+  if (!header) {
+    throw getError("Not authenticated.");
+  }
 
   try {
-    const token = req.get("Authorization")?.split(" ")[1];
+    const token = header.split(" ")[1];
 
     decodedToken = jwt.verify(token, JWT_PRIVATE_KEY);
   } catch (error: Error) {
