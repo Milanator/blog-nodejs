@@ -11,6 +11,7 @@ describe("Post Controller", () => {
   const rawPassword = "Test1234";
   const userId = "689c39adccb85649bf84cac0";
 
+  // run once in file
   before(async () => {
     await database(
       "mongodb+srv://navratilmilann:XwuSFq3KLQgRjQvs@nodejs-course.t5lqqq6.mongodb.net/mongo_testing?retryWrites=true&w=majority&appName=blog-nodejs"
@@ -27,7 +28,7 @@ describe("Post Controller", () => {
     });
   });
 
-  it("Store - testing DB", async () => {
+  it("[TESTING-DB] Store post", async () => {
     const req = {
       body: {
         text: "Hello",
@@ -56,6 +57,7 @@ describe("Post Controller", () => {
     expect(response).to.have.property("data");
   });
 
+  // run once in file
   after(async () => {
     await User.deleteMany({});
 

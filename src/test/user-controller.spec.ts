@@ -11,6 +11,7 @@ describe("User Controller", () => {
   const name = "Milan";
   const rawPassword = "Test1234";
 
+  // run once in file
   before(async () => {
     await database(
       "mongodb+srv://navratilmilann:XwuSFq3KLQgRjQvs@nodejs-course.t5lqqq6.mongodb.net/mongo_testing?retryWrites=true&w=majority&appName=blog-nodejs"
@@ -29,7 +30,7 @@ describe("User Controller", () => {
 
   beforeEach(() => {});
 
-  it("Login - fail - database (stubs)", async () => {
+  it("[STUBS] Login - failed", async () => {
     sinon.stub(User, "findOne");
 
     User.findOne.throws();
@@ -50,7 +51,7 @@ describe("User Controller", () => {
     User.findOne.restore();
   });
 
-  it("Login - success - testing DB", async () => {
+  it("[TESTING-DB] Login", async () => {
     const req = {
       body: {
         name,
@@ -63,7 +64,9 @@ describe("User Controller", () => {
       status: function () {
         return this;
       },
-      json: () => ({ message: "test", error: 0, data: req.body }),
+      json: function (data: any) {
+        return data;
+      },
     };
 
     const response = await userController.login(req, res, () => {});
@@ -75,6 +78,7 @@ describe("User Controller", () => {
 
   afterEach(() => {});
 
+  // run once in file
   after(async () => {
     await User.deleteMany({});
 
