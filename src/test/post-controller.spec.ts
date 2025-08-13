@@ -1,15 +1,15 @@
 import { expect } from "chai";
-import sinon from "sinon";
-import userController from "./../controllers/userController.ts";
+import postController from "./../controllers/postController.ts";
 import User from "./../models/user.ts";
 import database from "../plugins/database.ts";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
-describe("User Controller", () => {
+describe("Post Controller", () => {
   const email = "test@test.com";
   const name = "Milan";
   const rawPassword = "Test1234";
+  const userId = "689c39adccb85649bf84cac0";
 
   before(async () => {
     await database(
@@ -23,39 +23,20 @@ describe("User Controller", () => {
       name,
       email,
       password,
-      _id: "689c39adccb85649bf84cac0",
+      _id: userId,
     });
   });
 
-  beforeEach(() => {});
-
-  it("Login - fail - database (stubs)", async () => {
-    sinon.stub(User, "findOne");
-
-    User.findOne.throws();
-
+  it("Store - testing DB", async () => {
     const req = {
       body: {
-        email,
-        password: rawPassword,
+        text: "Hello",
       },
-    };
-
-    const response = await userController.login(req, {}, () => {});
-
-    expect(response).to.be.an("error");
-
-    expect(response).to.have.property("statusCode", 500);
-
-    User.findOne.restore();
-  });
-
-  it("Login - success - testing DB", async () => {
-    const req = {
-      body: {
-        name,
-        email,
-        password: rawPassword,
+      file: {
+        path: "ABC",
+      },
+      user: {
+        _id: userId,
       },
     };
 
@@ -63,17 +44,17 @@ describe("User Controller", () => {
       status: function () {
         return this;
       },
-      json: () => ({ message: "test", error: 0, data: req.body }),
+      json: function (data: any) {
+        return data;
+      },
     };
 
-    const response = await userController.login(req, res, () => {});
+    const response = await postController.store(req, res, () => {});
 
     expect(response).to.have.property("error", 0);
-    expect(response).to.have.property("data");
     expect(response).to.have.property("message");
+    expect(response).to.have.property("data");
   });
-
-  afterEach(() => {});
 
   after(async () => {
     await User.deleteMany({});
