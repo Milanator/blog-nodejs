@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
-export default () => {
+export default (connection = process.env.DATABASE_CONNECTION) => {
+  console.log(connection)
   return mongoose
-    .connect(process.env.DATABASE_CONNECTION)
+    .connect(connection)
     .then(() => console.log("🟢 DB connected!"));
 };

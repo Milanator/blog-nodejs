@@ -1,10 +1,12 @@
-export const getPagination = (
-  page: number = 1,
-  perPage: number = 2,
-  itemCount: number
-) => {
+import type { Request } from "express";
+
+export const getPagination = (req: Request, itemCount: number) => {
+  const { page = 1, perPage = 2 } = req.query;
+
   return {
     skip: (page - 1) * perPage,
     totalPages: Math.ceil(itemCount / perPage),
+    page: Number(page),
+    perPage,
   };
 };
