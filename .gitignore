@@ -136,3 +136,6 @@ dist
 .pnp.*
 
 public/*
+
+*.cert
+*.key
